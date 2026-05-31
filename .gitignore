@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# PyTorch 模型权重 (通常较大，不建议上传)
+*.pt
+*.pth
+*.ckpt
+
+# ModelScope 模型缓存
+.model_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志和临时文件
+*.log
+*.tmp
+
+# OMC 状态文件
+.omc/
+
+# 辅助工具脚本 (不需要提交)
+code/tu/
+data/hy/main.py
+
+# 运行结果输出
+result/*.csv
+data/result/
+data/predicted_complexes.txt

@@ -1,0 +1,13 @@
+# SHARCNet (HyperDNE-RC²) 依赖列表
+# 安装: pip install -r requirements.txt
+
+torch>=2.0.0
+torchvision>=0.15.0
+transformers>=4.30.0
+modelscope>=1.9.0
+networkx>=3.0
+scikit-learn>=1.3.0
+GraphRicciCurvature>=0.5.3
+tqdm>=4.65.0
+pandas>=2.0.0
+numpy>=1.24.0
