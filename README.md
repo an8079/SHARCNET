@@ -1,4 +1,4 @@
-# PPI2Complex (HyperDNE-RC²)
+# PPI2Complex
 
 A deep network embedding framework for protein-protein interaction (PPI) networks, integrating hypergraph semantic contrastive learning with Ricci curvature graph augmentation.
 
