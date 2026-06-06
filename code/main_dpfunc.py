@@ -1,7 +1,7 @@
 # main_dpfunc.py
 """DPFunc 数据集训练入口。
 
-使用 InterPro 域特征 + k-NN 相似图 + SHARCNet 模型进行蛋白质嵌入学习。
+使用 InterPro 域特征 + k-NN 相似图 + PPI2Complex 模型进行蛋白质嵌入学习。
 """
 
 import os
@@ -19,7 +19,7 @@ import networkx as nx
 
 from parser import parse_args as parse_base_args
 from dataset_dpfunc import DPFuncDataset
-from model import HyperDNERC2
+from model import PPI2Complex
 from utils import (
     set_global_seed, split_graph_edges, LinkPredictor,
     networkx_to_torch_sparse_adj, normalize_adjacency_matrix,
@@ -30,7 +30,7 @@ from utils import (
 def parse_args(argv=None):
     """扩展基础参数，添加 DPFunc 特有参数。"""
     parser = argparse.ArgumentParser(
-        description="SHARCNet + DPFunc 蛋白质功能预测数据集训练",
+        description="PPI2Complex + DPFunc 蛋白质功能预测数据集训练",
         parents=[argparse.ArgumentParser(add_help=False)],  # 先创建空壳
         conflict_handler='resolve'
     )
@@ -152,7 +152,7 @@ def main(args):
     # 步骤 2: 初始化模型
     # ----------------------------------------------------------------
     print("\n===== 步骤 2: 初始化模型和优化器 =====")
-    model = HyperDNERC2(args, initial_feature_dim=dataset_obj.feature_dim).to(device)
+    model = PPI2Complex(args, initial_feature_dim=dataset_obj.feature_dim).to(device)
     optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     print(f"模型参数量: {sum(p.numel() for p in model.parameters()):,}")
 
@@ -314,7 +314,7 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_args()
-    print("===== SHARCNet + DPFunc 训练 =====")
+    print("===== PPI2Complex + DPFunc 训练 =====")
     print(f"命名空间: {args.dpfunc_namespace}")
     print(f"k-NN: k={args.dpfunc_knn_k}, SVD: dim={args.dpfunc_svd_dim}")
     print(f"数据集: {args.dataset_name}")

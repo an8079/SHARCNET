@@ -1,4 +1,4 @@
-# SHARCNet (HyperDNE-RC²) 依赖列表
+# PPI2Complex 依赖列表
 # 安装: pip install -r requirements.txt
 
 torch>=2.0.0

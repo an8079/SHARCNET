@@ -116,9 +116,9 @@ class FeatureDecoder(nn.Module):
         return X_re
 
 
-class HyperDNERC2(nn.Module):
+class PPI2Complex(nn.Module):
     def __init__(self, args, initial_feature_dim: int):
-        super(HyperDNERC2, self).__init__()
+        super(PPI2Complex, self).__init__()
         self.args = args
         self.initial_feature_dim = initial_feature_dim
 

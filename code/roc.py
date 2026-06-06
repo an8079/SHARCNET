@@ -13,7 +13,7 @@ from sklearn.metrics import (roc_auc_score, average_precision_score, f1_score,
 
 from parser import parse_args
 from dataset import HypergraphDataset
-from model import HyperDNERC2
+from model import PPI2Complex
 from utils import (set_global_seed, split_graph_edges,
                    networkx_to_torch_sparse_adj, normalize_adjacency_matrix, get_pseudo_labels_and_hcn_lcn)
 
@@ -170,7 +170,7 @@ def main(args):
     print(f"最终节点特征维度: {dataset_obj.feature_dim}")
 
     print("\n===== 步骤 2: 初始化模型和优化器 =====")
-    model = HyperDNERC2(args, initial_feature_dim=dataset_obj.feature_dim).to(device)
+    model = PPI2Complex(args, initial_feature_dim=dataset_obj.feature_dim).to(device)
     optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
 
     print("\n===== 步骤 3: 开始模型训练 =====")
@@ -296,13 +296,13 @@ def main(args):
                 test_scores, roc_data, pr_data = link_predictor.evaluate(X_test, Y_test, "测试集")
 
                 # --- 新增代码：构建并保存曲线数据文件 ---
-                roc_data['model_name'] = 'SHARCNet'
+                roc_data['model_name'] = 'PPI2Complex'
                 roc_data['trial'] = i + 1
                 roc_data['curve_type'] = 'ROC'
                 roc_data['auc_metric_name'] = 'ROC-AUC'
                 roc_data['auc_value'] = test_scores['auc_roc']
 
-                pr_data['model_name'] = 'SHARCNet'
+                pr_data['model_name'] = 'PPI2Complex'
                 pr_data['trial'] = i + 1
                 pr_data['curve_type'] = 'PR'
                 pr_data['auc_metric_name'] = 'PR-AUC'
@@ -344,14 +344,14 @@ def main(args):
 
     end_run_time = time.time()
     print(f"\n总运行时间: {end_run_time - start_run_time:.2f} 秒")
-    print("===== HyperDNE-RC² (完整版) 运行结束 =====")
+    print("===== PPI2Complex 运行结束 =====")
 
 
 if __name__ == "__main__":
     args = parse_args()
     import json
 
-    print("===== HyperDNE-RC² (完整版) 配置参数 =====")
+    print("===== PPI2Complex 配置参数 =====")
     print(json.dumps(vars(args), indent=2, ensure_ascii=False))
     print("================================")
 

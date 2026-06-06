@@ -11,7 +11,7 @@ def parse_args(argv=None):
     返回:
         argparse.Namespace: 包含所有参数的对象。
     """
-    parser = argparse.ArgumentParser(description="HyperDNE-RC² (完整版): 深度融合TSCGC机制的蛋白质嵌入框架")
+    parser = argparse.ArgumentParser(description="PPI2Complex: 深度融合超图语义对比与Ricci曲率增强的蛋白质嵌入框架")
 
     # --- 数据集与特征参数 ---
     # ... (这里的所有 parser.add_argument(...) 内容保持不变)
@@ -48,7 +48,7 @@ def parse_args(argv=None):
     parser.add_argument('--ricci_process_method', default='remove', type=str, choices=['remove', 'weight'],
                         help="Ricci曲率处理边的方法：'remove'移除低曲率边, 'weight'根据曲率调整边权重")
 
-    # --- HyperDNE-RC² 模型参数 ---
+    # --- PPI2Complex 模型参数 ---
     parser.add_argument('--embedding_dim', default=128, type=int,
                         help='GCN/HGNN最终输出的蛋白质嵌入维度')
     parser.add_argument('--gcn_hidden_dims', type=int, nargs='*', default=[256],

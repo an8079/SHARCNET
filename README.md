@@ -1,8 +1,8 @@
-# SHARCNet (HyperDNE-RC²)
+# PPI2Complex (HyperDNE-RC²)
 
 A deep network embedding framework for protein-protein interaction (PPI) networks, integrating hypergraph semantic contrastive learning with Ricci curvature graph augmentation.
 
-SHARCNet combines Graph Convolutional Networks (GCN), Hypergraph Neural Networks (HGNN), Ricci curvature-based augmentation, and multiple contrastive learning objectives to produce high-quality protein embeddings.
+PPI2Complex combines Graph Convolutional Networks (GCN), Hypergraph Neural Networks (HGNN), Ricci curvature-based augmentation, and multiple contrastive learning objectives to produce high-quality protein embeddings.
 
 ## Key Features
 
@@ -21,12 +21,12 @@ SHARCNet combines Graph Convolutional Networks (GCN), Hypergraph Neural Networks
 ## Project Structure
 
 ```
-sharc/
+PPI2Complex/
 ├── code/                          # Source code
 │   ├── main.py                    # PPI dataset training entry point
 │   ├── main_dpfunc.py             # DPFunc function prediction training entry point
 │   ├── roc.py                     # Training entry point with ROC/PR curve output
-│   ├── model.py                   # HyperDNE-RC² model definition
+│   ├── model.py                   # PPI2Complex model definition
 │   ├── dataset.py                 # PPI dataset loading & ESM feature generation
 │   ├── dataset_dpfunc.py          # DPFunc dataset loading (InterPro domain features)
 │   ├── parser.py                  # CLI argument definitions

@@ -13,14 +13,14 @@ import traceback
 
 from parser import parse_args
 from dataset import HypergraphDataset
-from model import HyperDNERC2
+from model import PPI2Complex
 from utils import (set_global_seed, split_graph_edges, LinkPredictor,
                    networkx_to_torch_sparse_adj, normalize_adjacency_matrix, get_pseudo_labels_and_hcn_lcn)
 
 
 def main(args):
     """
-    执行一次完整的 SHARCNet 训练和评估流程。
+    执行一次完整的 PPI2Complex 训练和评估流程。
 
     Args:
         args (argparse.Namespace): 包含所有配置参数的对象。
@@ -63,7 +63,7 @@ def main(args):
     print(f"最终节点特征维度: {dataset_obj.feature_dim}")
 
     print("\n===== 步骤 2: 初始化模型和优化器 =====")
-    model = HyperDNERC2(args, initial_feature_dim=dataset_obj.feature_dim).to(device)
+    model = PPI2Complex(args, initial_feature_dim=dataset_obj.feature_dim).to(device)
     optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
 
     print("\n===== 步骤 3: 开始模型训练 =====")
@@ -237,7 +237,7 @@ def main(args):
 # 当此文件被直接运行时，执行默认流程
 if __name__ == "__main__":
     args = parse_args()
-    print("===== HyperDNE-RC² (完整版) 单次运行模式 =====")
+    print("===== PPI2Complex 单次运行模式 =====")
     print(json.dumps(vars(args), indent=2, ensure_ascii=False))
     print("========================================")
     main(args)

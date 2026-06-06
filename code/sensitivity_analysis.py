@@ -13,7 +13,7 @@ from parser import parse_args
 
 def run_sensitivity_analysis(cli_args):
     """
-    为SHARCNet模型执行超参数敏感性分析的主函数。
+    为PPI2Complex模型执行超参数敏感性分析的主函数。
     """
     # 1. 定义实验配置
     datasets_to_run = ['HuRI', 'yeast']#'c_elegans',
@@ -117,7 +117,7 @@ def run_sensitivity_analysis(cli_args):
 
 if __name__ == '__main__':
     # 为 sensitivity_analysis.py 脚本自身创建参数解析器
-    cli_parser = argparse.ArgumentParser(description="运行SHARCNet超参数敏感性分析")
+    cli_parser = argparse.ArgumentParser(description="运行PPI2Complex超参数敏感性分析")
     cli_parser.add_argument('--base_data_path', type=str, required=True,
                             help='包含所有数据集子目录 (c_elegans, HuRI, yeast) 的根目录的绝对路径。')
     cli_parser.add_argument('--output_dir', type=str, default=None,

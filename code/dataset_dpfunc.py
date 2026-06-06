@@ -2,7 +2,7 @@
 """DPFunc 蛋白质功能预测数据集加载器。
 
 使用 InterPro 域特征（而非 ESM 序列特征）构建蛋白质相似图，
-复用 SHARCNet (HyperDNE-RC²) 模型进行嵌入学习。
+复用 PPI2Complex 模型进行嵌入学习。
 
 数据来源：data_dpfunc/ 目录，包含：
   - id_map.pkl, all_protein_interpros.pkl, inter_idx.pkl
@@ -26,7 +26,7 @@ from utils import ricci_curvature_graph_augmentation
 class DPFuncDataset:
     """蛋白质功能预测数据集。
 
-    与 HypergraphDataset 保持相同接口，可复用 SHARCNet 模型。
+    与 HypergraphDataset 保持相同接口，可复用 PPI2Complex 模型。
     使用 InterPro 域 SVD 降维特征替代 ESM 特征，
     使用 k-NN 相似图替代 PPI 图。
     """
