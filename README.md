@@ -13,7 +13,9 @@ SHARCNet (HyperDNE-RC²) 是一个基于深度网络嵌入的蛋白质-蛋白质
   - HSCL (超图语义对比损失): 基于软聚类的正/负样本对
   - 视图对齐损失: 超图视图与RC增强视图对齐
 - **结构与特征重构**: 双解码器确保嵌入保留原始信息
-- **ESM-2 蛋白质语言模型特征**: 使用 `facebook/esm2_t33_650M_UR50D` 生成节点初始特征
+- **多种特征源支持**:
+  - **ESM-2 蛋白质语言模型特征**: 使用 `facebook/esm2_t33_650M_UR50D` 生成节点初始特征
+  - **InterPro 域特征**: 使用 InterPro 功能域标注作为节点特征 (DPFunc 数据集)
 - **自动模型下载**: 支持 HuggingFace 和 ModelScope 双通道自动下载 ESM 模型
 
 ## 项目结构
@@ -21,10 +23,12 @@ SHARCNet (HyperDNE-RC²) 是一个基于深度网络嵌入的蛋白质-蛋白质
 ```
 sharc/
 ├── code/                      # 源代码
-│   ├── main.py                # 主训练与评估入口
+│   ├── main.py                # PPI数据集训练入口
+│   ├── main_dpfunc.py         # DPFunc 功能预测数据集训练入口
 │   ├── roc.py                 # 带ROC/PR曲线输出的训练入口
 │   ├── model.py               # HyperDNE-RC² 模型定义
-│   ├── dataset.py             # 数据集加载与ESM特征生成
+│   ├── dataset.py             # PPI数据集加载与ESM特征生成
+│   ├── dataset_dpfunc.py      # DPFunc数据集加载 (InterPro域特征)
 │   ├── parser.py              # 命令行参数定义
 │   ├── utils.py               # 工具函数 (损失函数、图操作等)
 │   └── sensitivity_analysis.py # 超参数敏感性分析脚本
@@ -34,7 +38,12 @@ sharc/
 │   │   └── protein_seq.tsv    # 蛋白质序列
 │   ├── HuRI/                  # 人类相互作用组
 │   ├── yeast/                 # 酵母PPI网络
-│   └── hy/                    # 自定义数据集
+│   ├── hy/                    # 自定义数据集
+│   └── data_dpfunc/           # 蛋白质功能预测数据集
+│       ├── id_map.pkl         # 蛋白质ID映射 (60K+)
+│       ├── all_protein_interpros.pkl  # InterPro域标注
+│       ├── inter_idx.pkl      # InterPro域索引
+│       └── bp/cc/mf_*.txt     # GO功能注释 (BP/CC/MF)
 ├── result/                    # 评估结果输出
 ├── requirements.txt           # Python依赖
 └── README.md
@@ -116,6 +125,44 @@ python sensitivity_analysis.py --base_data_path ../data
 
 完整参数列表请运行 `python main.py --help`。
 
+### DPFunc 功能预测数据集
+
+`data_dpfunc` 是一个大规模蛋白质功能预测数据集，包含 **60,254 个蛋白质**和 **26,203 个 InterPro 功能域**，覆盖三个 GO 命名空间:
+
+| 命名空间 | 含义 | 训练蛋白数 | 验证蛋白数 | 测试蛋白数 |
+|----------|------|-----------|-----------|-----------|
+| `bp` | Biological Process | 47,140 | 731 | 1,312 |
+| `cc` | Cellular Component | 41,539 | 633 | 1,005 |
+| `mf` | Molecular Function | 33,339 | 422 | 702 |
+
+**特征**: 使用 InterPro 域二值向量 (26,203 维) 通过 TruncatedSVD 降维到 1,280 维，替代 ESM 序列特征。
+
+**图构建**: 在 SVD 特征上使用 k-NN (k=10, cosine) 构建蛋白质相似图。
+
+```bash
+# DPFunc 数据集训练 (默认 BP 命名空间)
+python main_dpfunc.py --dataset_name data_dpfunc
+
+# 指定 CC 或 MF 命名空间
+python main_dpfunc.py --dataset_name data_dpfunc --dpfunc_namespace cc
+python main_dpfunc.py --dataset_name data_dpfunc --dpfunc_namespace mf
+
+# 调整图构建参数
+python main_dpfunc.py --dataset_name data_dpfunc \
+    --dpfunc_knn_k 15 \
+    --dpfunc_svd_dim 1024 \
+    --min_clique_size 3
+```
+
+**DPFunc 专用参数**:
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--dpfunc_knn_k` | `10` | k-NN 相似图每个节点的邻居数 |
+| `--dpfunc_svd_dim` | `1280` | InterPro 特征 SVD 降维目标维度 |
+| `--dpfunc_namespace` | `bp` | GO 功能注释命名空间 (bp/cc/mf) |
+| `--min_clique_size` | `2` | DPFunc 默认使用 2 (每边即超边) |
+
 ### 使用自定义数据集
 
 在 `data/` 下创建新目录，包含以下文件:
@@ -136,11 +183,23 @@ python main.py --dataset_name your_dataset_name
 
 ## 数据集
 
+### PPI 网络数据集
+
 | 数据集 | 物种 | 节点数 | 边数 |
 |--------|------|--------|------|
 | c_elegans | 秀丽隐杆线虫 | ~3,500 | ~8,000 |
 | HuRI | 人类 | ~8,000 | ~50,000 |
 | yeast | 酿酒酵母 | ~5,000 | ~30,000 |
+
+### DPFunc 功能预测数据集
+
+| 属性 | 值 |
+|------|-----|
+| 蛋白质数 | 60,254 |
+| InterPro 域数 | 26,203 |
+| GO 命名空间 | BP, CC, MF |
+| 特征源 | InterPro 域 + SVD |
+| 图类型 | k-NN 相似图 (cosine) |
 
 ## 引用
 

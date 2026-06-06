@@ -39,3 +39,7 @@ data/hy/main.py
 result/*.csv
 data/result/
 data/predicted_complexes.txt
+
+# DPFunc 原始数据 (较大，需单独获取)
+data/data_dpfunc/*.pkl
+data/data_dpfunc/*.txt
